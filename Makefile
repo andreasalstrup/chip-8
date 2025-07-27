@@ -9,8 +9,12 @@ build:
 
 .PHONY: build-wasm
 build-wasm:
-	emcmake cmake -B build/wasm -DCMAKE_BUILD_TYPE=MinSizeRel
-	cmake --build build/wasm
+	make -f Makefile.emscripten 
+
+# .PHONY: build-wasm
+# build-wasm:
+# 	emcmake cmake -B build/wasm -DCMAKE_BUILD_TYPE=MinSizeRel
+# 	cmake --build build/wasm
 
 .PHONY: serve-wasm
 serve-wasm:
@@ -19,3 +23,4 @@ serve-wasm:
 .PHONY: clean
 clean:
 	rm -rf ./build
+	make -f Makefile.emscripten clean
