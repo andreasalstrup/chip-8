@@ -49,14 +49,16 @@ namespace chip8
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         }
 
-        ~FrameBuffer() = default;
+        ~FrameBuffer() {
+            glDeleteTextures(1, &texture);
+        }
 
         void update(uint32_t* pixels) {
             glBindTexture(GL_TEXTURE_2D, this->texture);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 64, 32, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         }
 
-        texture_t get() {
+        const texture_t get() const {
             return this->texture;
         }
     };
