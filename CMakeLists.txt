@@ -13,6 +13,7 @@ include_directories(./imgui ./imgui/backends)
 # define the source files
 set(SOURCES
         ./src/main.cpp
+        ./src/gui/app.cpp
         ./imgui/imgui.cpp
         ./imgui/imgui_demo.cpp
         ./imgui/imgui_draw.cpp
