@@ -24,6 +24,12 @@ namespace graphics
 {
     using texture_t = GLuint;
 
+    enum class action {
+        off,
+        on,
+        flip,
+    };
+
     class Bitmap {       
         uint32_t* pixels;
         GLuint texture;
@@ -33,5 +39,6 @@ namespace graphics
         ~Bitmap();
         void display();
         void update(uint32_t* pixels);
+        int setPixel(int pos, action action);
     };
 }

@@ -35,4 +35,30 @@ namespace graphics
         glBindTexture(GL_TEXTURE_2D, this->texture);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 64, 32, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
+
+    int Bitmap::setPixel(int pos, action action) {
+        if (this->pixels == NULL)
+            return 1;
+        
+        auto pixel = this->pixels[pos];
+        if (pixel == NULL)
+            return 1;
+
+        switch (action)
+        {
+        case action::off:
+            pixel = 0xFFFFFFFF;
+            break;
+        case action::on:
+            pixel = 0xFF000000;
+            break;
+        case action::flip:
+            pixel = (pixel == 0xFFFFFFFF) ? : 0xFF000000;
+            break;
+        default:
+            break;
+        }
+
+        return 0;
+    }
 }
