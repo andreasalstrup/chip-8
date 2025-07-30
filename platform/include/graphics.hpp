@@ -39,6 +39,8 @@ namespace graphics
         ~Bitmap();
         void display();
         void update(uint32_t* pixels);
+        uint32_t getPixel(int x, int y);
         int setPixel(int pos, action action);
+        int setPixel(int x, int y, action action);
     };
 }

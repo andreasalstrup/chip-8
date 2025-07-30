@@ -24,15 +24,15 @@ uint8_t font_data[] = {
 namespace emu
 {
     Emulator::Emulator() {
-        memcpy(&this->memory[FONT_OFFSET], font_data, sizeof(font_data));
+        memcpy(&this->state.memory[FONT_OFFSET], font_data, sizeof(font_data));
     }
 
     void Emulator::display() {
-        this->screen.bitmap.display();
+        this->state.display.bitmap.display();
     }
 
     void Emulator::update(uint32_t* pixels) {
-        this->screen.bitmap.update(pixels);
+        this->state.display.bitmap.update(pixels);
 
         // fetch
         // decode

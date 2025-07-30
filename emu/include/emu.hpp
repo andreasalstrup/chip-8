@@ -1,22 +1,32 @@
 #include "../../platform/include/graphics.hpp"
+#include "../include/cpu.hpp"
 
 #define MEMORY 4096
 
-namespace emu
-{
+namespace emu {
     constexpr int display_size = 64 * 32;
 
     class Display {
         uint32_t pixels[display_size];
 
-        public:
+    public:
         graphics::Bitmap bitmap;
-        Display() : bitmap{pixels} { }
+
+        Display() : bitmap{pixels} {
+        }
+    };
+
+    struct State {
+        Display display{};
+        CPU cpu;
+        uint8_t memory[MEMORY];
+        // uint16_t pc{0x200};
     };
 
     struct Emulator {
-        Display screen;
-        uint8_t memory[MEMORY];
+        State state;
+        // Display screen;
+        // uint8_t memory[MEMORY];
         // pc
         // register: (memory 4096 bytes)
         // 1. 16-bit index register.
@@ -26,8 +36,11 @@ namespace emu
         // sound timer
 
         Emulator();
+
         ~Emulator() = default;
+
         void display();
-        void update(uint32_t* pixels);
+
+        void update(uint32_t *pixels);
     };
 }

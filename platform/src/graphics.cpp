@@ -36,6 +36,11 @@ namespace graphics
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 64, 32, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
 
+    uint32_t Bitmap::getPixel(int x, int y) {
+            int pos = y * 64 + x;
+            return this->pixels[pos];
+    }
+
     int Bitmap::setPixel(int pos, action action) {
         if (this->pixels == NULL)
             return 1;
@@ -60,5 +65,10 @@ namespace graphics
         }
 
         return 0;
+    }
+
+    int Bitmap::setPixel(int x, int y, action action) {
+            int pos = y * 64 + x;
+            return this->setPixel(pos, action);
     }
 }
