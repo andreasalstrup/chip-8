@@ -1,7 +1,7 @@
 #include "../include/instructions.hpp"
 #include <cstdint>
 
-namespace emu {
+namespace emulator {
 int ClearScreen::execute(State &state, const uint16_t &opcode) {
   for (int i = 0; i < platform::DISPLAY_SIE; i++) {
     state.display.bitmap.setPixel(i, platform::action::on);
@@ -76,4 +76,4 @@ int Draw::execute(State &state, const uint16_t &opcode) {
 
   return 0;
 }
-} // namespace emu
+} // namespace emulator

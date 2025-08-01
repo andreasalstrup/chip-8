@@ -6,10 +6,8 @@
 #include <iostream>
 #include <unistd.h>
 
-#define FONT_OFFSET 0x050
-#define ROM_OFFSET 0x200
-
-const uint16_t font_data[] = {
+namespace emulator {
+constexpr uint16_t FONT_DATA[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -27,43 +25,19 @@ const uint16_t font_data[] = {
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
+constexpr int FONT_OFFSET = 0x050;
+constexpr int ROM_OFFSET = 0x200;
 
-namespace emu {
-Emulator::Emulator() {
+Chip8::Chip8() {
   auto &memory = this->state.memory;
   auto &pc = this->state.cpu.pc;
-  memcpy(&memory[FONT_OFFSET], font_data, sizeof(font_data));
+  memcpy(&memory[FONT_OFFSET], FONT_DATA, sizeof(FONT_DATA));
   pc = &memory[ROM_OFFSET];
 }
 
-void Emulator::display() { this->state.display.bitmap.display(); }
+void Chip8::display() { this->state.display.bitmap.display(); }
 
-void Emulator::loadRom(std::filesystem::path filepath) {
-  std::fstream fout;
-  fout.open(filepath, std::ios::in | std::ios::binary);
-
-  if (fout) {
-    const auto size = std::filesystem::file_size(filepath);
-    char buffer[size];
-    fout.read(buffer, size);
-    fout.close();
-    memcpy(&this->state.memory[ROM_OFFSET], buffer, size);
-
-    // Log rom data
-    auto *rom_ptr = reinterpret_cast<char *>(&this->state.memory[ROM_OFFSET]);
-    std::clog << "[LOG] Rom: ";
-    for (size_t i = 0; i < size; ++i) {
-      std::cout << std::hex << std::setw(2) << std::setfill('0')
-                << (static_cast<int>(static_cast<unsigned char>(rom_ptr[i])))
-                << ' ';
-    }
-    std::cout << std::dec << std::endl;
-  } else {
-    std::cerr << "[ERROR] Emulator::loadRom: Failed to open ROM." << std::endl;
-  }
-}
-
-void Emulator::update() {
+void Chip8::update() {
   // Fetch
   auto &pc = state.cpu.pc;
   const uint16_t opcode = (pc[0] << 8) | pc[1];
@@ -122,4 +96,29 @@ void Emulator::update() {
   // Execute
   this->state.display.bitmap.update();
 }
-} // namespace emu
+
+void Chip8::loadRom(std::filesystem::path filepath) {
+  std::fstream fout;
+  fout.open(filepath, std::ios::in | std::ios::binary);
+
+  if (fout) {
+    const auto size = std::filesystem::file_size(filepath);
+    char buffer[size];
+    fout.read(buffer, size);
+    fout.close();
+    memcpy(&this->state.memory[ROM_OFFSET], buffer, size);
+
+    // Log rom data
+    auto *rom_ptr = reinterpret_cast<char *>(&this->state.memory[ROM_OFFSET]);
+    std::clog << "[LOG] Rom: ";
+    for (size_t i = 0; i < size; ++i) {
+      std::cout << std::hex << std::setw(2) << std::setfill('0')
+                << (static_cast<int>(static_cast<unsigned char>(rom_ptr[i])))
+                << ' ';
+    }
+    std::cout << std::dec << std::endl;
+  } else {
+    std::cerr << "[ERROR] Emulator::loadRom: Failed to open ROM." << std::endl;
+  }
+}
+} // namespace emulator

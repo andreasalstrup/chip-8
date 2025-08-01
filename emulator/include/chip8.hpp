@@ -2,7 +2,7 @@
 #include "../include/cpu.hpp"
 #include <filesystem>
 
-namespace emu {
+namespace emulator {
 constexpr int MEMORY = 4096;
 
 class Display {
@@ -10,7 +10,6 @@ class Display {
 
 public:
   platform::Bitmap bitmap;
-
   Display() : bitmap{pixels} {}
 };
 
@@ -20,7 +19,7 @@ struct State {
   uint8_t memory[MEMORY];
 };
 
-struct Emulator {
+struct Chip8 {
   State state;
   // Display screen;
   // uint8_t memory[MEMORY];
@@ -32,10 +31,10 @@ struct Emulator {
   // delay timer
   // sound timer
 
-  Emulator();
-  ~Emulator() = default;
+  Chip8();
+  ~Chip8() = default;
   void display();
   void update();
   void loadRom(std::filesystem::path filepath);
 };
-} // namespace emu
+} // namespace emulator

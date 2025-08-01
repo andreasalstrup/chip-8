@@ -1,3 +1,4 @@
+#include "../../emulator/include/chip8.hpp"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
@@ -34,8 +35,6 @@
 #include "../imgui/examples/libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
-#include "../../emu/include/emu.hpp"
-
 int main() {
   // SDL window + OpenGL
   SDL_Window *window;
@@ -66,7 +65,7 @@ int main() {
   ImGui_ImplOpenGL3_Init("#version 330");
 
   // Init emulator
-  emu::Emulator emulator;
+  emulator::Chip8 emulator;
   emulator.loadRom(std::filesystem::path{"../roms/IBM_Logo.ch8"});
 
   bool running = true;

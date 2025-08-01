@@ -12,8 +12,6 @@ include_directories(./imgui ./imgui/backends)
 
 # define the source files
 set(SOURCES
-        #./src/main.cpp
-        # ./src/gui/app.cpp
         ./imgui/imgui.cpp
         ./imgui/imgui_demo.cpp
         ./imgui/imgui_draw.cpp
@@ -23,11 +21,11 @@ set(SOURCES
         ./imgui/backends/imgui_impl_opengl3.cpp
 )
 
-file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/emu/src/*.cpp")
+file(GLOB_RECURSE EMULATOR_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/emulator/src/*.cpp")
 file(GLOB_RECURSE PLATFORM_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/platform/src/*.cpp")
 
-add_executable(chip-8 ${GAME_SOURCES} ${PLATFORM_SOURCES} ${SOURCES})
-target_include_directories(chip-8 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/emu/include") #add header file
+add_executable(chip-8 ${EMULATOR_SOURCES} ${PLATFORM_SOURCES} ${SOURCES})
+target_include_directories(chip-8 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/emulator/include") #add header file
 target_include_directories(chip-8 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platform/include") #add header file
 remove_definitions(-DUNICODE) #remove unicode
 
