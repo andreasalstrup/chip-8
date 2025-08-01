@@ -3,8 +3,8 @@
 
 namespace emu {
 int ClearScreen::execute(State &state, const uint16_t &opcode) {
-  for (int i = 0; i < display_size; i++) {
-    state.display.bitmap.setPixel(i, graphics::action::on);
+  for (int i = 0; i < platform::DISPLAY_SIE; i++) {
+    state.display.bitmap.setPixel(i, platform::action::on);
   }
   return 0;
 }
@@ -57,18 +57,18 @@ int Draw::execute(State &state, const uint16_t &opcode) {
         uint8_t current_x = (start_x + col);
         uint8_t current_y = (start_y + row);
 
-        if (current_x >= 64 || current_y >= 32)
+        if (current_x >= platform::WIDTH || current_y >= platform::HEIGHT)
           continue;
 
         const auto &screen_pixel =
             state.display.bitmap.getPixel(current_x, current_y);
         if (screen_pixel == 0xFF000000) {
           state.display.bitmap.setPixel(current_x, current_y,
-                                        graphics::action::off);
+                                        platform::action::off);
           registers[0xF] = 1;
         } else {
           state.display.bitmap.setPixel(current_x, current_y,
-                                        graphics::action::on);
+                                        platform::action::on);
         }
       }
     }

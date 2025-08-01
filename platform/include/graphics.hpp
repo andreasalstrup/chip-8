@@ -1,5 +1,3 @@
-#include "imgui.h"
-
 #ifdef _WIN32
 #include <SDL.h>
 #else
@@ -20,8 +18,11 @@
 #endif
 #endif
 
-namespace graphics {
-using texture_t = GLuint;
+namespace platform {
+constexpr int WIDTH = 64;
+constexpr int HEIGHT = 32;
+constexpr int DISPLAY_SIE = WIDTH * HEIGHT;
+constexpr int SCALE = 20;
 
 enum class action {
   off,
@@ -37,9 +38,9 @@ public:
   Bitmap(uint32_t *pixels);
   ~Bitmap();
   void display();
-  void update(uint32_t *pixels);
+  void update();
   uint32_t getPixel(int x, int y);
   int setPixel(int pos, action action);
   int setPixel(int x, int y, action action);
 };
-} // namespace graphics
+} // namespace platform

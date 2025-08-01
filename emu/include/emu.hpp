@@ -2,16 +2,14 @@
 #include "../include/cpu.hpp"
 #include <filesystem>
 
-#define MEMORY 4096
-
 namespace emu {
-constexpr int display_size = 64 * 32;
+constexpr int MEMORY = 4096;
 
 class Display {
+  uint32_t pixels[platform::DISPLAY_SIE];
 
 public:
-  uint32_t pixels[display_size];
-  graphics::Bitmap bitmap;
+  platform::Bitmap bitmap;
 
   Display() : bitmap{pixels} {}
 };
@@ -35,13 +33,9 @@ struct Emulator {
   // sound timer
 
   Emulator();
-
   ~Emulator() = default;
-
   void display();
-
-  void update(uint32_t *pixels);
-
+  void update();
   void loadRom(std::filesystem::path filepath);
 };
 } // namespace emu

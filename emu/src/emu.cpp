@@ -9,7 +9,7 @@
 #define FONT_OFFSET 0x050
 #define ROM_OFFSET 0x200
 
-uint16_t font_data[] = {
+const uint16_t font_data[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -47,10 +47,10 @@ void Emulator::loadRom(std::filesystem::path filepath) {
     char buffer[size];
     fout.read(buffer, size);
     fout.close();
-    memcpy(&this->state.memory[0x200], buffer, size);
+    memcpy(&this->state.memory[ROM_OFFSET], buffer, size);
 
     // Log rom data
-    auto *rom_ptr = reinterpret_cast<char *>(&this->state.memory[0x200]);
+    auto *rom_ptr = reinterpret_cast<char *>(&this->state.memory[ROM_OFFSET]);
     std::clog << "[LOG] Rom: ";
     for (size_t i = 0; i < size; ++i) {
       std::cout << std::hex << std::setw(2) << std::setfill('0')
@@ -63,7 +63,7 @@ void Emulator::loadRom(std::filesystem::path filepath) {
   }
 }
 
-void Emulator::update(uint32_t *pixels) {
+void Emulator::update() {
   // Fetch
   auto &pc = state.cpu.pc;
   const uint16_t opcode = (pc[0] << 8) | pc[1];
@@ -120,6 +120,6 @@ void Emulator::update(uint32_t *pixels) {
   }
 
   // Execute
-  this->state.display.bitmap.update(this->state.display.pixels);
+  this->state.display.bitmap.update();
 }
 } // namespace emu

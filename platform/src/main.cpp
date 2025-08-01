@@ -1,7 +1,6 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
-#include <stdio.h>
 #include <unistd.h>
 
 #ifdef _WIN32
@@ -40,7 +39,6 @@ int main() {
   // SDL window + OpenGL
   SDL_Window *window;
   SDL_GLContext gl_context;
-  const int height = 320, width = 640;
 
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -49,9 +47,10 @@ int main() {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-  window =
-      SDL_CreateWindow("emu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+  window = SDL_CreateWindow(
+      "emu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+      platform::WIDTH * platform::SCALE, platform::HEIGHT * platform::SCALE,
+      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
   gl_context = SDL_GL_CreateContext(window);
   SDL_GL_MakeCurrent(window, gl_context);
   SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -70,9 +69,6 @@ int main() {
   std::string path{"/home/novem/dev/CHIP-8/roms/IBM_Logo.ch8"};
   emulator.loadRom(path);
 
-  uint32_t pixels[32 * 64];
-  auto framebuffer = graphics::Bitmap{pixels};
-
   bool running = true;
   SDL_Event event;
   while (running) {
@@ -89,7 +85,7 @@ int main() {
 
     // Display render
     emulator.display();
-    emulator.update(pixels);
+    emulator.update();
 
     ImGui::Begin("Debug Window");
     ImGui::Text("Hello, Emu!");
@@ -110,7 +106,8 @@ int main() {
 
     // Display draw
     ImGui::Render();
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, platform::WIDTH * platform::SCALE,
+               platform::HEIGHT * platform::SCALE);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
