@@ -20,7 +20,6 @@ struct State {
   Display display{};
   CPU cpu;
   uint8_t memory[MEMORY];
-  // uint16_t pc{0x200};
 };
 
 struct Emulator {

@@ -1,12 +1,15 @@
 #include "../include/instructions.hpp"
 #include <cassert>
 #include <fstream>
+#include <iomanip>
 #include <ios>
 #include <iostream>
+#include <unistd.h>
 
-#define FONT_OFFSET 0x50
+#define FONT_OFFSET 0x050
+#define ROM_OFFSET 0x200
 
-uint8_t font_data[] = {
+uint16_t font_data[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -27,7 +30,10 @@ uint8_t font_data[] = {
 
 namespace emu {
 Emulator::Emulator() {
-  memcpy(&this->state.memory[FONT_OFFSET], font_data, sizeof(font_data));
+  auto &memory = this->state.memory;
+  auto &pc = this->state.cpu.pc;
+  memcpy(&memory[FONT_OFFSET], font_data, sizeof(font_data));
+  pc = &memory[ROM_OFFSET];
 }
 
 void Emulator::display() { this->state.display.bitmap.display(); }
@@ -35,48 +41,43 @@ void Emulator::display() { this->state.display.bitmap.display(); }
 void Emulator::loadRom(std::filesystem::path filepath) {
   std::fstream fout;
   fout.open(filepath, std::ios::in | std::ios::binary);
+
   if (fout) {
     const auto size = std::filesystem::file_size(filepath);
     char buffer[size];
     fout.read(buffer, size);
     fout.close();
-    // auto pc = reinterpret_cast<char>(this->state.cpu.pc);
     memcpy(&this->state.memory[0x200], buffer, size);
-    // std::cout.write(reinterpret_cast<char*>(this->state.memory + 0x200),
-    // size);
 
+    // Log rom data
     auto *rom_ptr = reinterpret_cast<char *>(&this->state.memory[0x200]);
+    std::clog << "[LOG] Rom: ";
     for (size_t i = 0; i < size; ++i) {
       std::cout << std::hex << std::setw(2) << std::setfill('0')
                 << (static_cast<int>(static_cast<unsigned char>(rom_ptr[i])))
                 << ' ';
     }
-    std::cout << std::dec << std::endl; // reset to decimal just in case
-                                        // std::cout.write(rom_ptr, size);
-    // std::cout.write(reinterpret_cast<char*>(&this->state.memory), size);
-    // std::cout.write(buffer, size);
+    std::cout << std::dec << std::endl;
   } else {
-    std::cout << "Failed to open ROM" << std::endl;
+    std::cerr << "[ERROR] Emulator::loadRom: Failed to open ROM." << std::endl;
   }
 }
 
 void Emulator::update(uint32_t *pixels) {
-
-  // fetch
+  // Fetch
   auto &pc = state.cpu.pc;
-  const uint16_t opcode = pc;
+  const uint16_t opcode = (pc[0] << 8) | pc[1];
   pc += 2;
 
-  // decode
-  std::cout << "opcode: " << opcode << std::endl;
-  switch (opcode & 0x000F) {
+  // Decode
+  switch ((opcode & 0xF000) >> 12) {
   case 0x0:
-    std::cout << "Clear screen" << std::endl;
-    ClearScreen::execute(this->state);
+    std::clog << "[LOG] Clear screen" << std::endl;
+    ClearScreen::execute(this->state, opcode);
     break;
   case 0x1:
-    std::cout << "Jump " << std::endl;
-    Jump::execute(this->state);
+    std::clog << "[LOG] Jump" << std::endl;
+    Jump::execute(this->state, opcode);
     break;
   case 0x2:
     break;
@@ -87,28 +88,28 @@ void Emulator::update(uint32_t *pixels) {
   case 0x5:
     break;
   case 0x6:
-    std::cout << "SetRegisterVX " << std::endl;
-    SetRegisterVX::execute(this->state);
+    std::clog << "[LOG] SetRegisterVX" << std::endl;
+    SetRegisterVX::execute(this->state, opcode);
     break;
   case 0x7:
-    std::cout << "AddValueToRegisterVX" << std::endl;
-    AddValueToRegisterVX::execute(this->state);
+    std::clog << "[LOG] AddValueToRegisterVX" << std::endl;
+    AddValueToRegisterVX::execute(this->state, opcode);
     break;
   case 0x8:
     break;
   case 0x9:
     break;
   case 0xA:
-    std::cout << "SetIndexRegisterI" << std::endl;
-    SetIndexRegisterI::execute(this->state);
+    std::clog << "[LOG] SetIndexRegisterI" << std::endl;
+    SetIndexRegisterI::execute(this->state, opcode);
     break;
   case 0xB:
     break;
   case 0xC:
     break;
   case 0xD:
-    std::cout << "Draw" << std::endl;
-    Draw::execute(this->state);
+    std::clog << "[LOG] Draw" << std::endl;
+    Draw::execute(this->state, opcode);
     break;
   case 0xE:
     break;
@@ -118,7 +119,7 @@ void Emulator::update(uint32_t *pixels) {
     break;
   }
 
-  // execute
+  // Execute
   this->state.display.bitmap.update(this->state.display.pixels);
 }
 } // namespace emu

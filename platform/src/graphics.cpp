@@ -1,5 +1,6 @@
 #include "graphics.hpp"
 #include <iostream>
+#include <ostream>
 
 namespace graphics {
 
@@ -28,7 +29,6 @@ void Bitmap::display() {
 }
 
 void Bitmap::update(uint32_t *pixels) {
-  std::cout << pixels << std::endl;
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 64, 32, GL_RGBA, GL_UNSIGNED_BYTE,
                   pixels);
@@ -40,12 +40,13 @@ uint32_t Bitmap::getPixel(int x, int y) {
 }
 
 int Bitmap::setPixel(int pos, action action) {
-  if (this->pixels == NULL)
+  if (this->pixels == NULL) {
+    std::cerr << "[ERROR] Bitmap:setPixel error: failed to get pixels."
+              << std::endl;
     return 1;
+  }
 
   auto &pixel = this->pixels[pos];
-  if (pixel == NULL)
-    return 1;
 
   switch (action) {
   case action::off:
@@ -55,7 +56,7 @@ int Bitmap::setPixel(int pos, action action) {
     pixel = 0xFF000000;
     break;
   case action::flip:
-    pixel = (pixel == 0xFFFFFFFF) ?: 0xFF000000;
+    pixel = (pixel == 0xFFFFFFFF) ? 0xFF000000 : 0xFFFFFFFF;
     break;
   default:
     break;
