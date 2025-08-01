@@ -1,6 +1,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
+#include <filesystem>
 #include <unistd.h>
 
 #ifdef _WIN32
@@ -66,8 +67,7 @@ int main() {
 
   // Init emulator
   emu::Emulator emulator;
-  std::string path{"/home/novem/dev/CHIP-8/roms/IBM_Logo.ch8"};
-  emulator.loadRom(path);
+  emulator.loadRom(std::filesystem::path{"../roms/IBM_Logo.ch8"});
 
   bool running = true;
   SDL_Event event;
