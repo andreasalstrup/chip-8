@@ -1,3 +1,5 @@
+#pragma once
+
 #include "chip8.hpp"
 #include <cstdint>
 

@@ -1,10 +1,8 @@
 #include "../include/instructions.hpp"
-#include <cassert>
 #include <fstream>
 #include <iomanip>
 #include <ios>
 #include <iostream>
-#include <unistd.h>
 
 namespace emulator {
 constexpr uint16_t FONT_DATA[] = {
@@ -97,7 +95,7 @@ void Chip8::update() {
   this->state.display.bitmap.update();
 }
 
-void Chip8::loadRom(std::filesystem::path filepath) {
+void Chip8::loadRom(const std::filesystem::path& filepath) {
   std::fstream fout;
   fout.open(filepath, std::ios::in | std::ios::binary);
 

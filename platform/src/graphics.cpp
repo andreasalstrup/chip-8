@@ -8,7 +8,7 @@ Bitmap::Bitmap(uint32_t *pixels) : pixels{pixels} {
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
 
-  for (int i = 0; i < DISPLAY_SIE; ++i) {
+  for (int i = 0; i < DISPLAY_SIZE; ++i) {
     auto &pixel = pixels[i];
     pixel = (i % 2 == 0) ? 0xFF000000 : 0xFFFFFFFF;
   }
@@ -21,26 +21,26 @@ Bitmap::Bitmap(uint32_t *pixels) : pixels{pixels} {
 
 Bitmap::~Bitmap() { glDeleteTextures(1, &texture); }
 
-void Bitmap::display() {
+void Bitmap::display() const {
   auto texture = this->texture;
   ImDrawList *bg = ImGui::GetBackgroundDrawList();
   bg->AddImage((ImTextureID)(intptr_t)texture, ImVec2(0, 0),
                ImVec2(ImVec2(WIDTH * SCALE, HEIGHT * SCALE)));
 }
 
-void Bitmap::update() {
+void Bitmap::update() const {
   glBindTexture(GL_TEXTURE_2D, this->texture);
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, WIDTH, HEIGHT, GL_RGBA,
                   GL_UNSIGNED_BYTE, this->pixels);
 }
 
-uint32_t Bitmap::getPixel(int x, int y) {
+uint32_t Bitmap::getPixel(const int x, const int y) const {
   int pos = y * WIDTH + x;
   return this->pixels[pos];
 }
 
-int Bitmap::setPixel(int pos, action action) {
-  if (this->pixels == NULL) {
+int Bitmap::setPixel(const int pos, const action action) const {
+  if (this->pixels == nullptr) {
     std::cerr << "[ERROR] Bitmap:setPixel error: failed to get pixels."
               << std::endl;
     return 1;
@@ -65,8 +65,8 @@ int Bitmap::setPixel(int pos, action action) {
   return 0;
 }
 
-int Bitmap::setPixel(int x, int y, action action) {
-  int pos = y * WIDTH + x;
+int Bitmap::setPixel(const int x, const int y, const action action) const {
+  const int pos = y * WIDTH + x;
   return this->setPixel(pos, action);
 }
 } // namespace platform

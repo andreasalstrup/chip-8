@@ -1,3 +1,4 @@
+#pragma once
 #ifdef _WIN32
 #include <SDL.h>
 #else
@@ -21,7 +22,7 @@
 namespace platform {
 constexpr int WIDTH = 64;
 constexpr int HEIGHT = 32;
-constexpr int DISPLAY_SIE = WIDTH * HEIGHT;
+constexpr int DISPLAY_SIZE = WIDTH * HEIGHT;
 constexpr int SCALE = 20;
 
 enum class action {
@@ -32,15 +33,15 @@ enum class action {
 
 class Bitmap {
   uint32_t *pixels;
-  GLuint texture;
+  GLuint texture{};
 
 public:
-  Bitmap(uint32_t *pixels);
+  explicit Bitmap(uint32_t *pixels);
   ~Bitmap();
-  void display();
-  void update();
-  uint32_t getPixel(int x, int y);
-  int setPixel(int pos, action action);
-  int setPixel(int x, int y, action action);
+  void display() const;
+  void update() const;
+  uint32_t getPixel(int x, int y) const;
+  int setPixel(int pos, action action) const;
+  int setPixel(int x, int y, action action) const;
 };
 } // namespace platform
