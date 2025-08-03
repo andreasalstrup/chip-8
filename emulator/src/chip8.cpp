@@ -1,4 +1,6 @@
+#include "../include/chip8.hpp"
 #include "../include/instructions.hpp"
+#include "opcode.hpp"
 #include <fstream>
 #include <iomanip>
 #include <ios>
@@ -95,7 +97,7 @@ void Chip8::update() {
   this->state.display.bitmap.update();
 }
 
-void Chip8::loadRom(const std::filesystem::path& filepath) {
+void Chip8::loadRom(const std::filesystem::path &filepath) {
   std::fstream fout;
   fout.open(filepath, std::ios::in | std::ios::binary);
 

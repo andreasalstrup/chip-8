@@ -1,7 +1,9 @@
 #pragma once
 
-#include "chip8.hpp"
+#include "state.hpp"
 #include <cstdint>
+#include <functional>
+#include <map>
 
 namespace emulator {
 struct Instruction {
@@ -38,4 +40,15 @@ struct SetIndexRegisterI final : public Instruction {
 struct Draw final : public Instruction {
   static int execute(State &state, const uint16_t &opcode);
 };
-} // namespace emulator
+
+using instruction = std::function<int(State &, const uint16_t &)>;
+
+const std::map<Opcode, instruction> instruction_table = {
+    {Opcode::clear_screen, ClearScreen::execute},
+    {Opcode::jump, Jump::execute},
+    {Opcode::set_reg_to_num, SetRegisterVX::execute},
+    {Opcode::add, AddValueToRegisterVX::execute},
+    {Opcode::set_index, SetIndexRegisterI::execute},
+    {Opcode::draw, Draw::execute},
+};
+}; // namespace emulator
