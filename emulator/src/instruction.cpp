@@ -1,4 +1,4 @@
-#include "../include/instructions.hpp"
+#include "../include/instruction.hpp"
 #include <cstdint>
 
 namespace emulator {

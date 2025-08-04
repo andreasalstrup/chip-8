@@ -1,6 +1,5 @@
 #include "../include/chip8.hpp"
-#include "../include/instructions.hpp"
-#include "opcode.hpp"
+#include "../include/opcode.hpp"
 #include <fstream>
 #include <iomanip>
 #include <ios>
@@ -43,6 +42,10 @@ void Chip8::update() {
   const uint16_t opcode = (pc[0] << 8) | pc[1];
   pc += 2;
 
+  auto op = (Opcode)(opcode & 0xF000);
+  this->instruction.find(op)->second(this->state, opcode);
+
+  /*
   // Decode
   switch ((opcode & 0xF000) >> 12) {
   case 0x0:
@@ -92,6 +95,7 @@ void Chip8::update() {
   default:
     break;
   }
+  */
 
   // Execute
   this->state.display.bitmap.update();

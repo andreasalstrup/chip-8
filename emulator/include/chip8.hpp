@@ -1,11 +1,14 @@
 #pragma once
 
+#include "instruction.hpp"
 #include "state.hpp"
 #include <filesystem>
 
 namespace emulator {
 struct Chip8 {
   State state{};
+  const Table instruction{std::move(table)};
+  // Table instructions{std::move(instruction_table)};
   // Display screen;
   // uint8_t memory[MEMORY];
   // pc
