@@ -37,4 +37,11 @@ enum class Opcode {
   store_memory = 0xF055,              // FX55
   load_memory = 0xF065,               // FX65
 };
+
+enum class OpcodeType {
+  high_nibble = 0xF000,
+  low_nibble = 0x000F,
+  high_and_low_nibble = 0xF000F,
+  high_nibble_and_byte = 0xF0FF,
+};
 } // namespace emulator

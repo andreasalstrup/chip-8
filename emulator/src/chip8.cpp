@@ -1,5 +1,6 @@
 #include "../include/chip8.hpp"
 #include "../include/opcode.hpp"
+#include <cstdint>
 #include <fstream>
 #include <iomanip>
 #include <ios>
@@ -39,65 +40,34 @@ void Chip8::display() { this->state.display.bitmap.display(); }
 void Chip8::update() {
   // Fetch
   auto &pc = state.cpu.pc;
-  const uint16_t opcode = (pc[0] << 8) | pc[1];
+  const uint16_t opcode_value = (pc[0] << 8) | pc[1];
   pc += 2;
 
-  auto op = (Opcode)(opcode & 0xF000);
-  this->instruction.find(op)->second(this->state, opcode);
-
-  /*
   // Decode
-  switch ((opcode & 0xF000) >> 12) {
-  case 0x0:
-    std::clog << "[LOG] Clear screen" << std::endl;
-    ClearScreen::execute(this->state, opcode);
-    break;
-  case 0x1:
-    std::clog << "[LOG] Jump" << std::endl;
-    Jump::execute(this->state, opcode);
-    break;
-  case 0x2:
-    break;
-  case 0x3:
-    break;
-  case 0x4:
-    break;
-  case 0x5:
-    break;
-  case 0x6:
-    std::clog << "[LOG] SetRegisterVX" << std::endl;
-    SetRegisterVX::execute(this->state, opcode);
-    break;
-  case 0x7:
-    std::clog << "[LOG] AddValueToRegisterVX" << std::endl;
-    AddValueToRegisterVX::execute(this->state, opcode);
-    break;
-  case 0x8:
-    break;
-  case 0x9:
-    break;
-  case 0xA:
-    std::clog << "[LOG] SetIndexRegisterI" << std::endl;
-    SetIndexRegisterI::execute(this->state, opcode);
-    break;
-  case 0xB:
-    break;
-  case 0xC:
-    break;
-  case 0xD:
-    std::clog << "[LOG] Draw" << std::endl;
-    Draw::execute(this->state, opcode);
-    break;
-  case 0xE:
-    break;
-  case 0xF:
-    break;
-  default:
-    break;
-  }
-  */
+  auto execute = [&]() {
+    std::vector<OpcodeType> opcode_types{
+        OpcodeType::high_nibble, OpcodeType::low_nibble,
+        OpcodeType::high_and_low_nibble, OpcodeType::high_nibble_and_byte};
+
+    for (auto type : opcode_types) {
+      auto type_mask = static_cast<uint16_t>(type);
+      auto opcode = static_cast<Opcode>(opcode_value & type_mask);
+      auto it = this->instruction.find(opcode);
+      if (it != this->instruction.end()) {
+        it->second(this->state, opcode_value);
+        return true;
+      }
+    }
+    return false;
+  };
 
   // Execute
+  if (!execute())
+    return;
+
+  std::clog << "[LOG] Executing instructions " << std::hex << opcode_value
+            << std::endl;
+
   this->state.display.bitmap.update();
 }
 
