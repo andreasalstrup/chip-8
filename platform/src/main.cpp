@@ -3,6 +3,7 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
 #include <filesystem>
+#include <iostream>
 #include <unistd.h>
 
 #ifdef _WIN32
@@ -59,6 +60,7 @@ int main() {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   (void)io;
+  io.IniFilename = "./build/imgui.ini";
 
   ImGui::StyleColorsDark();
   ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -66,7 +68,7 @@ int main() {
 
   // Init emulator
   emulator::Chip8 emulator;
-  emulator.loadRom(std::filesystem::path{"../roms/IBM_Logo.ch8"});
+  emulator.loadRom(std::filesystem::path{"./roms/IBM_Logo.ch8"});
 
   bool running = true;
   SDL_Event event;

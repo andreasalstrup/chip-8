@@ -1,10 +1,10 @@
 .PHONY: run
 run:
-	(cd ./build/ && ./chip-8)
+	./build/chip-8
 
 .PHONY: build
 build:
-	cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -B build
+	cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug -B build
 	cmake --build build
 
 .PHONY: build-wasm
