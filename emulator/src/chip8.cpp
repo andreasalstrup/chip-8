@@ -33,6 +33,7 @@ Chip8::Chip8() {
   auto &pc = this->state.cpu.pc;
   memcpy(&memory[FONT_OFFSET], FONT_DATA, sizeof(FONT_DATA));
   pc = &memory[ROM_OFFSET];
+  // pc = ROM_OFFSET;
 }
 
 void Chip8::display() { this->state.display.bitmap.display(); }
@@ -41,6 +42,9 @@ void Chip8::update() {
   // Fetch
   auto &pc = state.cpu.pc;
   const uint16_t opcode_value = (pc[0] << 8) | pc[1];
+  // const uint16_t opcode_value = (state.memory[pc] << 8) | state.memory[pc +
+  // 1];
+
   pc += 2;
 
   // Decode
@@ -52,12 +56,15 @@ void Chip8::update() {
     for (auto type : opcode_types) {
       auto type_mask = static_cast<uint16_t>(type);
       auto opcode = static_cast<Opcode>(opcode_value & type_mask);
+      std::cout << "mask: " << type_mask << " opcode: " << (int)opcode
+                << std::endl;
       auto it = this->instruction.find(opcode);
       if (it != this->instruction.end()) {
         it->second(this->state, opcode_value);
         return true;
       }
     }
+    std::cout << "WHAT INSTRUCTION??" << std::endl;
     return false;
   };
 

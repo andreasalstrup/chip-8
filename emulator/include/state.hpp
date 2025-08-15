@@ -2,8 +2,8 @@
 
 #include "../../platform/include/graphics.hpp"
 #include "../include/cpu.hpp"
-#include "opcode.hpp"
-#include <map>
+#include <cstdint>
+#include <vector>
 
 namespace emulator {
 constexpr int MEMORY = 4096;
@@ -20,7 +20,6 @@ struct State {
   Display display{};
   CPU cpu{};
   uint8_t memory[MEMORY]{};
-  std::map<Opcode, int> my_map{};
-  // std::map<Opcode &, int> my_map{};
+  std::vector<uint8_t*> call_stack{};
 };
 } // namespace emulator
