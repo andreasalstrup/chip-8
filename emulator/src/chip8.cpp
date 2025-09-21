@@ -46,18 +46,24 @@ void Chip8::update() {
   // Decode
   auto execute = [&]() {
     std::vector<OpcodeType> opcode_types{
-        OpcodeType::high_nibble, OpcodeType::low_nibble,
-        OpcodeType::high_and_low_nibble, OpcodeType::high_nibble_and_byte};
+        OpcodeType::high_and_low_nibble,
+        OpcodeType::high_nibble_and_byte,
+        OpcodeType::low_nibble,
+        OpcodeType::high_nibble,
+    };
 
     for (auto type : opcode_types) {
       auto type_mask = static_cast<uint16_t>(type);
       auto opcode = static_cast<Opcode>(opcode_value & type_mask);
       auto it = this->instruction.find(opcode);
       if (it != this->instruction.end()) {
+        print_hex(opcode);
+        print_hex(type);
         it->second(this->state, opcode_value);
         return true;
       }
     }
+    std::cout << "WHAT INSTRUCTION??" << std::endl;
     return false;
   };
 
@@ -65,8 +71,7 @@ void Chip8::update() {
   if (!execute())
     return;
 
-  std::clog << "[LOG] Executing instructions " << std::hex << opcode_value
-            << std::endl;
+  std::cout << std::endl;
 
   this->state.display.bitmap.update();
 }

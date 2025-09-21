@@ -68,7 +68,10 @@ int main() {
 
   // Init emulator
   emulator::Chip8 emulator;
-  emulator.loadRom(std::filesystem::path{"./roms/IBM_Logo.ch8"});
+  // emulator.loadRom(std::filesystem::path{"./roms/IBM_Logo.ch8"});
+  // emulator.loadRom(std::filesystem::path{"./roms/test_opcode.ch8"});
+  // emulator.loadRom(std::filesystem::path{"./roms/BC_test.ch8"});
+  emulator.loadRom(std::filesystem::path{"./roms/4-flags.ch8"});
 
   bool running = true;
   SDL_Event event;
