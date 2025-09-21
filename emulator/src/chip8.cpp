@@ -33,7 +33,6 @@ Chip8::Chip8() {
   auto &pc = this->state.cpu.pc;
   memcpy(&memory[FONT_OFFSET], FONT_DATA, sizeof(FONT_DATA));
   pc = &memory[ROM_OFFSET];
-  // pc = ROM_OFFSET;
 }
 
 void Chip8::display() { this->state.display.bitmap.display(); }
@@ -42,24 +41,24 @@ void Chip8::update() {
   // Fetch
   auto &pc = state.cpu.pc;
   const uint16_t opcode_value = (pc[0] << 8) | pc[1];
-  // const uint16_t opcode_value = (state.memory[pc] << 8) | state.memory[pc +
-  // 1];
-
   pc += 2;
 
   // Decode
   auto execute = [&]() {
     std::vector<OpcodeType> opcode_types{
-        OpcodeType::high_nibble, OpcodeType::low_nibble,
-        OpcodeType::high_and_low_nibble, OpcodeType::high_nibble_and_byte};
+        OpcodeType::high_and_low_nibble,
+        OpcodeType::high_nibble_and_byte,
+        OpcodeType::low_nibble,
+        OpcodeType::high_nibble,
+    };
 
     for (auto type : opcode_types) {
       auto type_mask = static_cast<uint16_t>(type);
       auto opcode = static_cast<Opcode>(opcode_value & type_mask);
-      std::cout << "mask: " << type_mask << " opcode: " << (int)opcode
-                << std::endl;
       auto it = this->instruction.find(opcode);
       if (it != this->instruction.end()) {
+        print_hex(opcode);
+        print_hex(type);
         it->second(this->state, opcode_value);
         return true;
       }
@@ -72,8 +71,7 @@ void Chip8::update() {
   if (!execute())
     return;
 
-  std::clog << "[LOG] Executing instructions " << std::hex << opcode_value
-            << std::endl;
+  std::cout << std::endl;
 
   this->state.display.bitmap.update();
 }
