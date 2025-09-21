@@ -16,6 +16,8 @@ concept InstructionConcept = requires(State &state, const uint16_t &opcode) {
 
 template <InstructionConcept T> struct Instruction {
   static int execute(State &state, const uint16_t &opcode) {
+    print_hex(opcode);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     return T::execute(state, opcode);
   }
 };
@@ -196,11 +198,11 @@ using Table = std::map<Opcode, Fn>;
 inline const Table table = {
     {Opcode::clear_screen, Instruction<ClearScreen>::execute},
     {Opcode::jump, Instruction<Jump>::execute},
-    // {Opcode::subroutine_call, Instruction<SubroutineCall>::execute},
-    // {Opcode::subroutine_return, Instruction<SubroutineReturn>::execute},
+    {Opcode::subroutine_call, Instruction<SubroutineCall>::execute},
+    {Opcode::subroutine_return, Instruction<SubroutineReturn>::execute},
     {Opcode::skip_condition_1, Instruction<SkipCondition1>::execute},
     {Opcode::skip_condition_2, Instruction<SkipCondition2>::execute},
-    // {Opcode::skip_condition_3, Instruction<SkipCondition3>::execute},
+    {Opcode::skip_condition_3, Instruction<SkipCondition3>::execute},
     {Opcode::skip_condition_4, Instruction<SkipCondition4>::execute},
     {Opcode::set_reg_to_num, Instruction<SetRegisterVX>::execute},
     {Opcode::add, Instruction<AddValueToRegisterVX>::execute},
@@ -208,6 +210,7 @@ inline const Table table = {
     {Opcode::or_bitwise, Instruction<BinaryOR>::execute},
     {Opcode::and_bitwise, Instruction<BinaryAND>::execute},
     {Opcode::xor_bitwise, Instruction<BinaryXOR>::execute},
+    {Opcode::add_reg_to_reg, Instruction<AddRegToReg>::execute},
     {Opcode::sub_regX_regY, Instruction<SubRegXRegY>::execute},
     {Opcode::sub_regY_regX, Instruction<SubRegYRegX>::execute},
     {Opcode::shift_right, Instruction<ShiftRight>::execute},

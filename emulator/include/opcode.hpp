@@ -1,5 +1,13 @@
 #pragma once
 
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
+
+// Opcode:  0x0000
+// Type:    0xF000
+// Instru:  0x00EE
+
 namespace emulator {
 enum class Opcode {
   clear_screen = 0x0000,              // 00E0 (First nibble)
@@ -41,7 +49,23 @@ enum class Opcode {
 enum class OpcodeType {
   high_nibble = 0xF000,
   low_nibble = 0x000F,
-  high_and_low_nibble = 0xF000F,
+  high_and_low_nibble = 0xF00F,
   high_nibble_and_byte = 0xF0FF,
+};
+
+inline void print_hex(const uint16_t &opcode) {
+  std::cout << "Instru:\t 0x" << std::setw(4) << std::setfill('0') << std::hex
+            << std::uppercase << opcode << std::endl; // << std::endl;
+};
+
+inline void print_hex(const Opcode &opcode) {
+  std::cout << "Opcode:\t 0x" << std::setw(4) << std::setfill('0') << std::hex
+            << std::uppercase << static_cast<uint16_t>(opcode) << std::endl;
+};
+
+inline void print_hex(const OpcodeType &opcode_type) {
+  std::cout << "Type:\t 0x" << std::setw(4) << std::setfill('0') << std::hex
+            << std::uppercase << static_cast<uint16_t>(opcode_type)
+            << std::endl;
 };
 } // namespace emulator
