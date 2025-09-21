@@ -10,7 +10,7 @@ Bitmap::Bitmap(uint32_t *pixels) : pixels{pixels} {
 
   for (int i = 0; i < DISPLAY_SIZE; ++i) {
     auto &pixel = pixels[i];
-    pixel = 0xFF000000;
+    pixel = 0xFF000000u;
   }
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, WIDTH, HEIGHT, 0, GL_RGBA,
@@ -50,13 +50,13 @@ int Bitmap::setPixel(const int pos, const action action) const {
 
   switch (action) {
   case action::off:
-    pixel = 0xFFFFFFFF;
+    pixel = 0xFFFFFFFFu;
     break;
   case action::on:
-    pixel = 0xFF000000;
+    pixel = 0xFF000000u;
     break;
   case action::flip:
-    pixel = (pixel == 0xFFFFFFFF) ? 0xFF000000 : 0xFFFFFFFF;
+    pixel = (pixel == 0xFFFFFFFFu) ? 0xFF000000u : 0xFFFFFFFFu;
     break;
   default:
     break;
