@@ -10,7 +10,7 @@ Bitmap::Bitmap(uint32_t *pixels) : pixels{pixels} {
 
   for (int i = 0; i < DISPLAY_SIZE; ++i) {
     auto &pixel = pixels[i];
-    pixel = (i % 2 == 0) ? 0xFF000000 : 0xFFFFFFFF;
+    pixel = 0xFF000000;
   }
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, WIDTH, HEIGHT, 0, GL_RGBA,
